@@ -1,10 +1,38 @@
-import devtoolsJson from 'vite-plugin-devtools-json';
-import tailwindcss from '@tailwindcss/vite';
-import { sveltekit } from '@sveltejs/kit/vite';
-import { defineConfig } from 'vite';
+import devtoolsJson from 'vite-plugin-devtools-json'
+import tailwindcss from '@tailwindcss/vite'
+import { sveltekit } from '@sveltejs/kit/vite'
+import { defineConfig } from 'vite'
+import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
-	plugins: [tailwindcss(), sveltekit(), devtoolsJson()],
+	plugins: [
+		tailwindcss(),
+		sveltekit(),
+		devtoolsJson(),
+		VitePWA({
+			registerType: 'autoUpdate',
+			manifest: {
+				name: 'Medicine Tracker PWA',
+				short_name: 'MedTrack',
+				start_url: '/',
+				display: 'standalone',
+				background_color: '#ffffff',
+				theme_color: '#3b82f6',
+				icons: [
+					{
+						src: '/pwa-icon.png',
+						sizes: '192x192',
+						type: 'image/png',
+					},
+					{
+						src: '/pwa-icon.png',
+						sizes: '512x512',
+						type: 'image/png',
+					},
+				],
+			},
+		}),
+	],
 	test: {
 		expect: { requireAssertions: true },
 		projects: [
@@ -16,12 +44,12 @@ export default defineConfig({
 					browser: {
 						enabled: true,
 						provider: 'playwright',
-						instances: [{ browser: 'chromium' }]
+						instances: [{ browser: 'chromium' }],
 					},
 					include: ['src/**/*.svelte.{test,spec}.{js,ts}'],
 					exclude: ['src/lib/server/**'],
-					setupFiles: ['./vitest-setup-client.ts']
-				}
+					setupFiles: ['./vitest-setup-client.ts'],
+				},
 			},
 			{
 				extends: './vite.config.ts',
@@ -29,9 +57,9 @@ export default defineConfig({
 					name: 'server',
 					environment: 'node',
 					include: ['src/**/*.{test,spec}.{js,ts}'],
-					exclude: ['src/**/*.svelte.{test,spec}.{js,ts}']
-				}
-			}
-		]
-	}
-});
+					exclude: ['src/**/*.svelte.{test,spec}.{js,ts}'],
+				},
+			},
+		],
+	},
+})
