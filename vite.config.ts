@@ -47,7 +47,7 @@ export default defineConfig({
 						instances: [{ browser: 'chromium' }],
 					},
 					include: ['src/**/*.svelte.{test,spec}.{js,ts}'],
-					exclude: ['src/lib/server/**'],
+					exclude: ['src/libs/server/**'],
 					setupFiles: ['./vitest-setup-client.ts'],
 				},
 			},
