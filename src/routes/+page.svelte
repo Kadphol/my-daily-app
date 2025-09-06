@@ -1,47 +1,16 @@
-<script lang="ts">
-	import { onMount } from 'svelte'
-	import { getWeatherAndAQI, getNextReminder } from '../libs/api'
-	import { checkMedicineTakenToday, toggleMedicineTaken } from '../libs/storage'
-	import { supabase } from '../libs/supabase-client'
-
-	let weather = ''
-	let aqi = ''
-	let medicineTaken = false
-	let nextReminder = ''
-	let user = null
-
-	async function signInWithGoogle() {
-		const { error } = await supabase.auth.signInWithOAuth({ provider: 'google' })
-		if (error) console.error('Error signing in:', error)
-	}
-
-	async function signOut() {
-		await supabase.auth.signOut()
-		user = null
-	}
-
-	onMount(async () => {
-		const {
-			data: { session },
-		} = await supabase.auth.getSession()
-		user = session?.user || null
-
-		supabase.auth.onAuthStateChange((_event, session) => {
-			user = session?.user || null
-		})
-
-		if (user) {
-			const data = await getWeatherAndAQI()
-			weather = data.weather
-			aqi = data.aqi
-			nextReminder = getNextReminder()
-			medicineTaken = checkMedicineTakenToday()
-		}
-	})
+<script>
+	let { data } = $props()
+	let { colors } = $derived(data)
 </script>
 
 <main class="p-4 space-y-6 min-h-screen bg-gradient-to-b from-blue-50 to-white">
-	{#if !user}
+	<h1>Welcome to Supabase!</h1>
+	<ul>
+		{#each colors as color (color)}
+			<li>{color.name}</li>
+		{/each}
+	</ul>
+	<!-- {#if !user}
 		<section class="text-center mt-20">
 			<h1 class="text-3xl font-bold mb-4">Welcome to MedTrack</h1>
 			<button
@@ -84,7 +53,7 @@
 				Sign Out
 			</button>
 		</section>
-	{/if}
+	{/if} -->
 </main>
 
 <style>
